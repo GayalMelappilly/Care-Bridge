@@ -1,4 +1,4 @@
-# CareBridge 💙
+# CareBridge
 
 **CareBridge** is a specialized web platform designed to support children with autism and their caregivers. It bridges the gap between parents and professional mentors, providing a holistic ecosystem for development tracking, scheduling, resource sharing, and community support.
 
@@ -100,5 +100,6 @@ npm run dev
 ```
 
 The application will be available at `http://localhost:3000`.
+
 # Care-Bridge
 # Care-Bridge
