@@ -144,13 +144,13 @@ const Resources = () => {
 
                 {/* Add Resource Modal */}
                 {showAddModal && (
-                    <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                        <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-8 animate-fadeIn">
-                            <div className="flex justify-between items-center mb-6">
+                    <div className="modal-overlay">
+                        <div className="modal-card modal-md animate-fadeIn">
+                            <div className="modal-header">
                                 <h3 className="text-xl font-bold text-gray-900">Add New Resource</h3>
                                 <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600">✕</button>
                             </div>
-                            <form onSubmit={handleCreateResource} className="space-y-4">
+                            <form onSubmit={handleCreateResource} className="modal-body space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                                     <input required type="text" value={newResource.title} onChange={e => setNewResource({ ...newResource, title: e.target.value })} className="w-full rounded-xl border-gray-300 p-2.5" />
@@ -180,7 +180,7 @@ const Resources = () => {
                                     <label className="block text-sm font-medium text-gray-700 mb-1">URL (External Link)</label>
                                     <input required type="url" value={newResource.url} onChange={e => setNewResource({ ...newResource, url: e.target.value })} className="w-full rounded-xl border-gray-300 p-2.5" placeholder="https://..." />
                                 </div>
-                                <div className="pt-4 flex justify-end gap-3">
+                                <div className="modal-footer">
                                     <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-50 rounded-lg">Cancel</button>
                                     <button type="submit" className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700">Add Resource</button>
                                 </div>

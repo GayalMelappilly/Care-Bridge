@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || "http://localhost:5000/api";
 
 export const registerUser = async (userData) => {
     const response = await fetch(`${API_URL}/auth/register`, {
@@ -122,6 +122,51 @@ export const addActivity = async (token, childId, activityData) => {
     if (!response.ok) throw new Error("Failed to add activity");
     return response.json();
 };
+
+export const addCallReport = async (token, childId, reportData) => {
+    const response = await fetch(`${API_URL}/activities/${childId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            token: token
+        },
+        body: JSON.stringify(reportData)
+    });
+    if (!response.ok) throw new Error("Failed to save call report");
+    return response.json();
+};
+
+export const updateActivity = async (token, activityId, activityData) => {
+    const response = await fetch(`${API_URL}/activities/${activityId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            token: token
+        },
+        body: JSON.stringify(activityData)
+    });
+    if (!response.ok) throw new Error("Failed to update activity");
+    return response.json();
+};
+
+// --- Daily Observations ---
+export const getObservations = async (token, childId) => {
+    const response = await fetch(`${API_URL}/observations/${childId}`, {
+        headers: { token }
+    });
+    if (!response.ok) throw new Error("Failed to fetch observations");
+    return response.json();
+};
+
+export const addObservation = async (token, childId, observationData) => {
+    const response = await fetch(`${API_URL}/observations/${childId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", token },
+        body: JSON.stringify(observationData)
+    });
+    if (!response.ok) throw new Error("Failed to add observation");
+    return response.json();
+};
 // --- Mentor & Session API ---
 
 export const getMentors = async (token) => {
@@ -154,6 +199,22 @@ export const getMyClients = async (token) => {
     return response.json();
 };
 
+export const getClientChildren = async (token, parentId) => {
+    const response = await fetch(`${API_URL}/mentor/clients/${parentId}/children`, {
+        headers: { token }
+    });
+    if (!response.ok) throw new Error("Failed to fetch client children");
+    return response.json();
+};
+
+export const getChildDetails = async (token, childId) => {
+    const response = await fetch(`${API_URL}/children/${childId}`, {
+        headers: { token }
+    });
+    if (!response.ok) throw new Error("Failed to fetch child details");
+    return response.json();
+};
+
 // Sessions
 export const createSession = async (token, sessionData) => {
     const response = await fetch(`${API_URL}/mentor/sessions`, {
@@ -161,6 +222,16 @@ export const createSession = async (token, sessionData) => {
         headers: { "Content-Type": "application/json", token },
         body: JSON.stringify(sessionData)
     });
+    return response.json();
+};
+
+export const completeSession = async (token, sessionId, completedAt) => {
+    const response = await fetch(`${API_URL}/mentor/sessions/${sessionId}/complete`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", token },
+        body: JSON.stringify({ completed_at: completedAt })
+    });
+    if (!response.ok) throw new Error("Failed to complete session");
     return response.json();
 };
 
@@ -240,5 +311,94 @@ export const addComment = async (token, postId, content) => {
         headers: { "Content-Type": "application/json", token },
         body: JSON.stringify({ content })
     });
+    return response.json();
+};
+
+// --- Messages API ---
+export const getMessages = async (token, otherUserId) => {
+    const response = await fetch(`${API_URL}/messages/${otherUserId}`, {
+        headers: { token }
+    });
+    if (!response.ok) throw new Error("Failed to fetch messages");
+    return response.json();
+};
+
+export const sendMessage = async (token, receiverId, content) => {
+    const response = await fetch(`${API_URL}/messages/${receiverId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", token },
+        body: JSON.stringify({ content })
+    });
+    if (!response.ok) throw new Error("Failed to send message");
+    return response.json();
+};
+
+// --- File Sharing API ---
+export const getSharedFiles = async (token, otherUserId) => {
+    const response = await fetch(`${API_URL}/files/${otherUserId}`, {
+        headers: { token }
+    });
+    if (!response.ok) throw new Error("Failed to fetch files");
+    return response.json();
+};
+
+export const uploadFile = async (token, receiverId, file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(`${API_URL}/files/${receiverId}`, {
+        method: "POST",
+        headers: { token },
+        body: formData
+    });
+    
+    if (!response.ok) throw new Error("Failed to upload file");
+    return response.json();
+};
+
+// --- Speech Logs ---
+export const getSpeechLogs = async (token, childId) => {
+    const response = await fetch(`${API_URL}/speech/${childId}`, {
+        headers: { token }
+    });
+    if (!response.ok) throw new Error("Failed to fetch speech logs");
+    return response.json();
+};
+
+export const addSpeechLog = async (token, childId, logData) => {
+    const response = await fetch(`${API_URL}/speech/${childId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", token },
+        body: JSON.stringify(logData)
+    });
+    if (!response.ok) throw new Error("Failed to add speech log");
+    return response.json();
+};
+
+// --- Weekly Report ---
+export const getWeeklyReport = async (token, childId) => {
+    const response = await fetch(`${API_URL}/reports/weekly/${childId}`, {
+        headers: { token }
+    });
+    if (!response.ok) throw new Error("Failed to fetch report");
+    return response.json();
+};
+
+// --- Events ---
+export const getEvents = async (token) => {
+    const response = await fetch(`${API_URL}/events`, {
+        headers: { token }
+    });
+    if (!response.ok) throw new Error("Failed to fetch events");
+    return response.json();
+};
+
+export const createEvent = async (token, eventData) => {
+    const response = await fetch(`${API_URL}/events`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", token },
+        body: JSON.stringify(eventData)
+    });
+    if (!response.ok) throw new Error("Failed to create event");
     return response.json();
 };

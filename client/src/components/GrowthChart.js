@@ -1,5 +1,15 @@
 "use client";
-import React from 'react';
+import React from "react";
+import {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer
+} from "recharts";
 
 const GrowthChart = ({ logs }) => {
     if (!logs || logs.length === 0) {
@@ -10,36 +20,48 @@ const GrowthChart = ({ logs }) => {
         );
     }
 
-    return (
-        <div className="overflow-x-auto">
-            <div className="inline-block min-w-full align-middle">
-                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Date</th>
-                                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Height <span className="text-gray-500 font-normal">(cm)</span></th>
-                                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Weight <span className="text-gray-500 font-normal">(kg)</span></th>
-                                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Head Circ. <span className="text-gray-500 font-normal">(cm)</span></th>
-                                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Note</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200 bg-white">
-                            {logs.map((log) => (
-                                <tr key={log.log_id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                                        {new Date(log.recorded_at).toLocaleDateString()}
-                                    </td>
-                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-700">{log.height_cm || '-'}</td>
-                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-700">{log.weight_kg || '-'}</td>
-                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-700">{log.head_circumference_cm || '-'}</td>
-                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500 italic">{log.note || '-'}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+    const data = [...logs]
+        .sort((a, b) => new Date(a.recorded_at) - new Date(b.recorded_at))
+        .map((log) => ({
+            date: new Date(log.recorded_at).toLocaleDateString(),
+            height: log.height_cm || null,
+            weight: log.weight_kg || null,
+            head: log.head_circumference_cm || null,
+            note: log.note || ""
+        }));
+
+    const CustomTooltip = ({ active, payload, label }) => {
+        if (active && payload && payload.length) {
+            const note = payload[0].payload.note;
+            return (
+                <div className="bg-white p-4 rounded-xl shadow-xl border border-gray-100">
+                    <p className="font-bold text-gray-900 mb-1">{label}</p>
+                    {payload.map((item) => (
+                        <p key={item.dataKey} className="text-sm text-gray-700">
+                            {item.name}: <span className="font-semibold">{item.value ?? "-"}</span>
+                        </p>
+                    ))}
+                    {note && <p className="text-xs text-gray-500 italic mt-2">"{note}"</p>}
                 </div>
-            </div>
+            );
+        }
+        return null;
+    };
+
+    return (
+        <div className="h-72 w-full pt-4">
+            <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={data} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+                    <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: "#6B7280", fontSize: 12 }} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fill: "#6B7280", fontSize: 12 }} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    <Line type="monotone" dataKey="height" name="Height (cm)" stroke="#4f46e5" strokeWidth={3} dot={{ r: 4 }} />
+                    <Line type="monotone" dataKey="weight" name="Weight (kg)" stroke="#06b6d4" strokeWidth={3} dot={{ r: 4 }} />
+                    <Line type="monotone" dataKey="head" name="Head Circ. (cm)" stroke="#10b981" strokeWidth={3} dot={{ r: 4 }} />
+                </LineChart>
+            </ResponsiveContainer>
         </div>
     );
 };

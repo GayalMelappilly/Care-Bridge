@@ -13,7 +13,7 @@ const Community = () => {
 
     // New Post State
     const [showCreateModal, setShowCreateModal] = useState(false);
-    const [newPost, setNewPost] = useState({ content: "", category: "General" });
+    const [newPost, setNewPost] = useState({ title: "", content: "", category: "General" });
 
     // Comment state
     const [commentInputs, setCommentInputs] = useState({});
@@ -54,7 +54,7 @@ const Community = () => {
         try {
             const token = localStorage.getItem("token");
             await createPost(token, newPost);
-            setNewPost({ content: "", category: selectedChannel === "All Posts" ? "General" : selectedChannel });
+            setNewPost({ title: "", content: "", category: selectedChannel === "All Posts" ? "General" : selectedChannel });
             setShowCreateModal(false);
             fetchPosts();
         } catch (err) { console.error(err); }
@@ -151,10 +151,21 @@ const Community = () => {
 
                         {/* Create Post Modal */}
                         {showCreateModal && (
-                            <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                                <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 animate-fadeIn">
-                                    <h3 className="text-lg font-bold text-gray-900 mb-4">Start a New Discussion</h3>
-                                    <form onSubmit={handleCreatePost}>
+                            <div className="modal-overlay">
+                                <div className="modal-card modal-md animate-fadeIn">
+                                    <div className="modal-header">
+                                        <h3 className="text-lg font-semibold text-gray-900">Start a New Discussion</h3>
+                                        <button onClick={() => setShowCreateModal(false)} className="text-sm font-medium text-indigo-600 hover:text-indigo-800">Close</button>
+                                    </div>
+                                    <form onSubmit={handleCreatePost} className="modal-body">
+                                        <input
+                                            required
+                                            type="text"
+                                            value={newPost.title}
+                                            onChange={e => setNewPost({ ...newPost, title: e.target.value })}
+                                            placeholder="Give your post a title"
+                                            className="w-full rounded-xl border-gray-300 p-3 mb-3 focus:border-indigo-500 focus:ring-indigo-500"
+                                        />
                                         <textarea
                                             required
                                             rows="4"
@@ -205,6 +216,9 @@ const Community = () => {
                                             )}
                                         </div>
 
+                                        {post.title && (
+                                            <h3 className="text-lg font-bold text-gray-900 mb-2">{post.title}</h3>
+                                        )}
                                         <p className="text-gray-800 text-base leading-relaxed whitespace-pre-wrap mb-4">{post.content}</p>
 
                                         <div className="flex items-center gap-4">

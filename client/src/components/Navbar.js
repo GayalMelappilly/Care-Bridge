@@ -11,21 +11,22 @@ const Navbar = () => {
 
     const navLinks = [
         { name: 'Dashboard', href: '/dashboard' },
-        ...(user?.role === 'mentor' ? [{ name: 'Schedule', href: '/schedule' }] : []),
+        { name: 'Schedule', href: '/schedule' },
+        { name: 'Messages', href: '/messages' },
         { name: 'Resources', href: '/resources' },
         { name: 'Community', href: '/community' },
+        { name: 'Events', href: '/events' },
     ];
 
     const isActive = (path) => pathname === path;
 
     return (
-        <nav className="fixed w-full z-50 glass border-b border-border/50 transition-all duration-300">
+        <nav className="fixed w-full z-50 bg-white border-b border-gray-200 transition-all duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-20 items-center">
                     {/* Logo & Brand */}
                     <div className="flex items-center gap-10">
                         <Link href="/dashboard" className="flex items-center gap-3 group">
-
                             <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 tracking-tight">
                                 CareBridge
                             </span>
@@ -98,48 +99,50 @@ const Navbar = () => {
             </div>
 
             {/* Mobile Menu Dropdown */}
-            <div className="md:hidden glass border-t border-gray-100 absolute w-full animate-fadeIn shadow-xl">
-                <div className="pt-2 pb-3 px-4 space-y-1">
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.name}
-                            href={link.href}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className={`block px-4 py-3 rounded-xl text-base font-medium transition-colors ${isActive(link.href)
-                                ? 'bg-indigo-50 text-indigo-700'
-                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                }`}
-                        >
-                            {link.name}
-                        </Link>
-                    ))}
-                </div>
-                <div className="pt-4 pb-6 border-t border-gray-100 px-6 bg-gray-50/50">
-                    <div className="flex items-center gap-3 mb-6">
-                        <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-lg shadow-sm">
-                            {user?.name?.charAt(0) || 'U'}
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <div className="text-base font-bold text-gray-900">{user?.name}</div>
-                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border ${user?.role === 'mentor'
-                                        ? 'bg-violet-50 text-violet-600 border-violet-100'
-                                        : 'bg-blue-50 text-blue-600 border-blue-100'
-                                    }`}>
-                                    {user?.role}
-                                </span>
-                            </div>
-                            <div className="text-sm font-medium text-gray-500">{user?.email}</div>
-                        </div>
+            {isMobileMenuOpen && (
+                <div className="md:hidden glass border-t border-gray-100 absolute w-full animate-fadeIn shadow-xl">
+                    <div className="pt-2 pb-3 px-4 space-y-1">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.name}
+                                href={link.href}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={`block px-4 py-3 rounded-xl text-base font-medium transition-colors ${isActive(link.href)
+                                    ? 'bg-indigo-50 text-indigo-700'
+                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                    }`}
+                            >
+                                {link.name}
+                            </Link>
+                        ))}
                     </div>
-                    <button
-                        onClick={logout}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-red-200 rounded-xl text-base font-bold text-red-600 bg-white hover:bg-red-50 transition-colors shadow-sm"
-                    >
-                        Sign out
-                    </button>
+                    <div className="pt-4 pb-6 border-t border-gray-100 px-6 bg-gray-50/50">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-lg shadow-sm">
+                                {user?.name?.charAt(0) || 'U'}
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <div className="text-base font-bold text-gray-900">{user?.name}</div>
+                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border ${user?.role === 'mentor'
+                                            ? 'bg-violet-50 text-violet-600 border-violet-100'
+                                            : 'bg-blue-50 text-blue-600 border-blue-100'
+                                        }`}>
+                                        {user?.role}
+                                    </span>
+                                </div>
+                                <div className="text-sm font-medium text-gray-500">{user?.email}</div>
+                            </div>
+                        </div>
+                        <button
+                            onClick={logout}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-red-200 rounded-xl text-base font-bold text-red-600 bg-white hover:bg-red-50 transition-colors shadow-sm"
+                        >
+                            Sign out
+                        </button>
+                    </div>
                 </div>
-            </div>
+            )}
         </nav>
     );
 };

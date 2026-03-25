@@ -9,12 +9,15 @@ const Register = () => {
         email: "",
         password: "",
         name: "",
-        role: "parent"
+        role: "parent",
+        specialty: "",
+        credentials: "",
+        bio: ""
     });
     const [error, setError] = useState("");
     const { login } = useAuth();
 
-    const { email, password, name, role } = inputs;
+    const { email, password, name, role, specialty, credentials, bio } = inputs;
 
     const onChange = (e) => {
         setInputs({ ...inputs, [e.target.name]: e.target.value });
@@ -23,7 +26,7 @@ const Register = () => {
     const onSubmitForm = async (e) => {
         e.preventDefault();
         try {
-            const body = { email, password, name, role };
+            const body = { email, password, name, role, specialty, credentials, bio };
             const data = await registerUser(body);
 
             if (data.token) {
@@ -92,6 +95,41 @@ const Register = () => {
                             </select>
                         </div>
                     </div>
+
+                    {role === "mentor" && (
+                        <div className="space-y-3">
+                            <div>
+                                <input
+                                    type="text"
+                                    name="specialty"
+                                    value={specialty}
+                                    onChange={onChange}
+                                    className="relative block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-3"
+                                    placeholder="Specialty (e.g. Occupational Therapist)"
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    type="text"
+                                    name="credentials"
+                                    value={credentials}
+                                    onChange={onChange}
+                                    className="relative block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-3"
+                                    placeholder="Credentials (e.g. OTR/L, BCBA)"
+                                />
+                            </div>
+                            <div>
+                                <textarea
+                                    name="bio"
+                                    value={bio}
+                                    onChange={onChange}
+                                    rows="3"
+                                    className="relative block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-3"
+                                    placeholder="Short bio"
+                                />
+                            </div>
+                        </div>
+                    )}
 
                     {error && <div className="text-red-500 text-sm text-center">{error}</div>}
 
